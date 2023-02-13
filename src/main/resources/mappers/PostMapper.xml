@@ -8,12 +8,12 @@
           id
         , title
         , content
-        , writer
-        , view_cnt
-        , notice_yn
-        , delete_yn
-        , created_date
-        , modified_date
+        , writer_id as writerId
+        , view_cnt as viewCnt
+        , notice_yn as noticeYn
+        , delete_yn as deleteYn
+        , created_date as createdDate
+        , modified_date as createdDate
     </sql>
 
 
@@ -25,25 +25,28 @@
               #{id}
             , #{title}
             , #{content}
-            , #{writer}
+            , #{writerId}
             , 0
             , #{noticeYn}
             , 0
             , NOW()
             , NULL
+            , #{boardId}
         )
     </insert>
 
 
     <!-- 게시글 상세정보 조회 -->
-    <select id="findById" parameterType="long" resultType="com.study.domain.PostResponse">
+    <select id="findById" parameterType="long" resultType="com.study.domain.PostDTO">
         SELECT
             <include refid="postColumns" />
         FROM
             tb_post
         WHERE
-            id = #{value}
+            id = #{id}
     </select>
+
+
 
 
     <!-- 게시글 수정 -->
@@ -53,7 +56,7 @@
               modified_date = NOW()
             , title = #{title}
             , content = #{content}
-            , writer = #{writer}
+            , writer_id = #{writerId}
             , notice_yn = #{noticeYn}
         WHERE
             id = #{id}
@@ -80,6 +83,16 @@
             delete_yn = 0
         ORDER BY
             id DESC
+    </select>
+
+    <!-- 게시판 별 게시글 리스트 조회 -->
+    <select id="findByBoardId" parameterType="long" resultType="com.study.domain.PostDTO">
+        SELECT
+        <include refid="postColumns" />
+        FROM
+            tb_post
+        WHERE
+            board_id = #{id}
     </select>
 
 </mapper>

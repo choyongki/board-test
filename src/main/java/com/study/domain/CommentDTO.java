@@ -13,6 +13,6 @@ public class CommentDTO extends CommonDTO {
 
     private String content;
 
-    private String writer;
+    private String writerId;
 
 }

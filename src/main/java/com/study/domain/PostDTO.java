@@ -1,12 +1,13 @@
 package com.study.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
-public class PostResponse {
-
+public class PostDTO {
     private Long id;                       // PK
     private String title;                  // 제목
     private String content;                // 내용
@@ -16,5 +17,4 @@ public class PostResponse {
     private Boolean deleteYn;              // 삭제 여부
     private LocalDateTime createdDate;     // 생성일시
     private LocalDateTime modifiedDate;    // 최종 수정일시
-
 }

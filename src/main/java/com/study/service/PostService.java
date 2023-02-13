@@ -1,5 +1,6 @@
 package com.study.service;
 
+import com.study.domain.PostDTO;
 import com.study.mapper.PostMapper;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
@@ -31,7 +32,7 @@ public class PostService {
      * @param id - PK
      * @return 게시글 상세정보
      */
-    public PostResponse findPostById(final Long id) {
+    public PostDTO findById(final Long id) {
         return postMapper.findById(id);
     }
 
@@ -62,6 +63,10 @@ public class PostService {
      */
     public List<PostResponse> findAllPost() {
         return postMapper.findAll();
+    }
+
+    public List<PostDTO> findByBoardId(Long id){
+        return postMapper.findByBoardId(id);
     }
 
 }

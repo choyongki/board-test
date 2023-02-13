@@ -7,7 +7,7 @@
 		  idx
 		, board_idx
 		, content
-		, writer
+		, writer_id as writerId
 		, delete_yn
 		, insert_time
 		, update_time
@@ -21,7 +21,7 @@
 			  #{idx}
 			, #{boardIdx}
 			, #{content}
-			, #{writer}
+			, #{writerId}
 			, IFNULL(#{deleteYn}, 'N')
 			, NOW()
 			, NULL
@@ -45,7 +45,7 @@
 		SET
 			  update_time = NOW()
 			, content = #{content}
-			, writer = #{writer}
+			, writer_id = #{writerId}
 		WHERE
 			idx = #{idx}
 	</update>

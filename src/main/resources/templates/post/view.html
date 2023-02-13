@@ -7,7 +7,6 @@
 <th:block layout:fragment="content">
   <div class="page_tits">
     <h3>게시판 관리</h3>
-    <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>리스트형</span> <span>상세정보</span></p>
   </div>
 
   <div class="content">
@@ -33,7 +32,7 @@
         </tr>
         <tr>
           <th scope="row">이름</th>
-          <td colspan="3">[[ ${post.writer} ]]</td>
+          <td colspan="3">[[ ${post.writerId} ]]</td>
         </tr>
         <tr>
           <th scope="row">내용</th>
@@ -49,10 +48,46 @@
               tmpStr= tmpStr.replaceAll("&amp;amp;","&");
               document.getElementById('content').innerHTML = tmpStr;
             </script>
+            [[ ${post.content} ]]
           </td>
         </tr>
         </tbody>
       </table>
+
+      <th:block layout:fragment="add-content">
+        <div class="box-content">
+          <div class="card-content">
+            <div class="clearfix">
+              <h4 class="box-title pull-left">Comment</h4>
+              <!-- /.box-title -->
+            </div>
+
+            <form class="form-horizontal form-view">
+              <div class="input-group margin-bottom-20">
+                <input type="email" class="form-control" placeholder="">
+                <div class="input-group-btn"><button type="button" class="btn waves-effect waves-light"><i class="fa fa-commenting" aria-hidden="true"></i></button></div>
+                <!-- /.input-group-btn -->
+              </div>
+              <ul class="notice-list">
+                <li>
+                  <span class="name">Betty Simmons</span>
+                  <span class="desc">There are new settings available</span>
+                  <span class="time">2019.03.26</span>
+                  <button type="button" class="btn btn-xs btn-circle"><i class="fa fa-close" aria-hidden="true"></i></button>
+                </li>
+                <li>
+                  <span class="name">Betty Kim</span>
+                  <span class="desc">There are new settings available</span>
+                  <span class="time">2019.03.15</span>
+                  <button type="button" class="btn btn-xs btn-circle"><i class="fa fa-close" aria-hidden="true"></i></button>
+                </li>
+              </ul>
+            </form>
+          </div>
+          <!-- /.card-content -->
+        </div>
+        <!-- /.box-content -->
+      </th:block>
       <p class="btn_set">
         <a th:href="@{/post/write.do( id=${post.id} )}" class="btns btn_bdr4 btn_mid">수정</a>
         <button type="button" class="btns btn_bdr1 btn_mid">삭제</button>
@@ -61,4 +96,5 @@
     </section>
   </div> <!--/* .content */-->
 </th:block>
+
 </html>

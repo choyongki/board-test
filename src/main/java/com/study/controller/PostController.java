@@ -1,46 +1,67 @@
 package com.study.controller;
 
+import com.study.domain.BoardDTO;
+import com.study.domain.PostDTO;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
+import com.study.service.BoardService;
 import com.study.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+
+@Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/post")
+@Controller
 public class PostController {
 
     private final PostService postService;
+    private final BoardService boardService;
 
-    // 게시글 작성 페이지
-    @GetMapping("/post/write.do")
-    public String openPostWrite(@RequestParam(value = "id", required = false) final Long id, Model model) {
-        if (id != null) {
-            PostResponse post = postService.findPostById(id);
-            model.addAttribute("post", post);
-        }
-        return "post/write";
-    }
-
-    // 게시글 리스트 페이지
-    @GetMapping("/post/list.do")
-    public String openPostList(Model model) {
+    // 게시판 별 게시글 리스트 페이지
+    @GetMapping()
+    public String postList(Model model) {
         List<PostResponse> posts = postService.findAllPost();
+        List<BoardDTO> boardList = boardService.getBoardList();
         model.addAttribute("posts", posts);
+        model.addAttribute("boardList",boardList);
         return "post/list";
     }
 
+    // 게시글 작성 페이지
+    @GetMapping("/post/write.do")
+    public String openPostWrite(@RequestParam final Long boardId, Model model) {
+        if (boardId != null) {
+            List<BoardDTO> boardList = boardService.getBoardList();
+            model.addAttribute("boardList", boardList);
+        }
+        //BoardDTO board = boardService.getBoardDetail(boardId);
+        //model.addAttribute("board",board);
+        return "post/write";
+    }
+
+
+
     // 게시글 상세 페이지
-    @GetMapping("/post/view.do")
-    public String openPostView(@RequestParam final Long id, Model model) {
-        PostResponse post = postService.findPostById(id);
+    @GetMapping("/{id}")
+    public String postDetail(
+            @PathVariable Long id ,
+            @RequestParam Long boardId, Model model) {
+        log.info("id : ",id);
+        log.info("boardId : ",boardId);
+        List<BoardDTO> boardList = boardService.getBoardList();
+        BoardDTO board = boardService.getBoardDetail(boardId);
+        PostDTO post = postService.findById(id);
         model.addAttribute("post", post);
+        model.addAttribute("board", board);
+        model.addAttribute("boardList", boardList);
+
         return "post/view";
     }
 

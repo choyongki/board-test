@@ -1,5 +1,6 @@
 package com.study.mapper;
 
+import com.study.domain.PostDTO;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,7 +21,7 @@ public interface PostMapper {
      * @param id - PK
      * @return 게시글 상세정보
      */
-    PostResponse findById(Long id);
+    PostDTO findById(Long id);
 
     /**
      * 게시글 수정
@@ -45,5 +46,7 @@ public interface PostMapper {
      * @return 게시글 수
      */
     int count();
+
+    List<PostDTO> findByBoardId(Long id);
 
 }
