@@ -1,10 +1,12 @@
 package com.study.service;
 
+import com.study.domain.DeleteRequest;
 import com.study.domain.PostDTO;
 import com.study.mapper.PostMapper;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,9 +54,8 @@ public class PostService {
      * @param id - PK
      * @return PK
      */
-    public Long deletePost(final Long id) {
+    public void deletePost(Long id) {
         postMapper.deleteById(id);
-        return id;
     }
 
     /**

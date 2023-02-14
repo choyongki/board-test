@@ -16,6 +16,9 @@
         <!--/* 게시글 수정인 경우, 서버로 전달할 게시글 번호 (PK) */-->
         <input type="hidden" id="id" name="id" th:if="${post != null}" th:value="${post.id}" />
 
+        <!-- 게시판 번호 -->
+        <input type="hidden" id="boardId" name="boardId" th:value="${board.id}" />
+
         <!--/* 서버로 전달할 공지글 여부 */-->
         <input type="hidden" id="noticeYn" name="noticeYn" />
         <table class="tb tb_row">
@@ -25,21 +28,21 @@
           <tbody>
 
           <tr>
-            <th>게시판
-            <td colspan="3" th:text="${board.title}">
-<!--              <input type="text" id="boardId" name="boardId" maxlength="50"  />-->
-            </td>
+              <th scope="row">게시판</th>
+              <td>[[${board.title}]]</td>
+
+              <th scope="row">등록일</th>
+              <td>[[ ${post.modifiedDate} ]]</td>
           </tr>
 
           <tr>
             <th>제목 <span class="es">필수 입력</span></th>
-            <td colspan="3"><input type="text" id="title" name="title" maxlength="50" placeholder="제목을 입력해 주세요." /></td>
+            <td colspan="3"><input type="text" id="title" name="title" maxlength="50" th:value="${post.title}" /></td>
           </tr>
 
-
           <tr>
-            <th>작성자 <span class="es">필수 입력</span></th>
-            <td colspan="3"><input type="text" id="writerId" name="writerId" maxlength="10" placeholder="이름을 입력해 주세요." /></td>
+            <th>작성자</th>
+            <td colspan="3">[[ ${post.writerId} ]]</td>
           </tr>
 
           <tr>
@@ -47,17 +50,17 @@
             <td>
               <span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span>
             </td>
-            <td colspan="3"><input type="text" id="password" name="password" maxlength="20" placeholder="비밀번호 입력해 주세요."></td>
+            <td colspan="3"><input type="text" id="password" name="password" maxlength="20" ></td>
           </tr>
 
           <tr>
             <th>내용 <span class="es">필수 입력</span></th>
-            <td colspan="3"><textarea id="content" name="content" cols="50" rows="10"  placeholder="내용을 입력해 주세요."></textarea></td>
+            <td colspan="3"><textarea id="content" name="content" cols="50" rows="10" >[[ ${post.content} ]]</textarea></td>
           </tr>
           </tbody>
         </table>
         <p class="btn_set">
-          <button type="button" id="saveBtn" th:boardId="${board.id}" th:onclick="savePost(this.getAttribute('boardId'))" class="btns btn_st3 btn_mid">저장</button>
+          <button type="button" id="saveBtn" th:onclick="savePost()" class="btns btn_st3 btn_mid">수정</button>
           <a th:href="@{/board/{id}(boardId=${board.id})}" class="btns btn_bdr3 btn_mid">뒤로</a>
         </p>
       </form>
@@ -81,13 +84,13 @@
     /*<![CDATA[*/
 
     window.onload = () => {
-      renderPostInfo();
+      //renderPostInfo();
     }
 
 
-    // 등록일 초기화
-    function initCreatedDate() {
-      document.getElementById('createdDate').value = dayjs().format('YYYY-MM-DD');
+    // 수정일 초기화
+    function initModifiedDate() {
+      document.getElementById('modifiedDate').value = dayjs().format('YYYY-MM-DD');
     }
 
 
@@ -96,14 +99,14 @@
       const post = [[ ${post} ]];
 
       if ( !post ) {
-        initCreatedDate();
-        return false;
+          initModifiedDate();
+          return false;
       }
 
       const form = document.getElementById('saveForm');
       const fields = ['id', 'title', 'content', 'writerId', 'noticeYn'];
       form.isNotice.checked = post.noticeYn;
-      form.createdDate.value = dayjs(post.createdDate).format('YYYY-MM-DD HH:mm');
+      // form.modifiedDate.value = dayjs(post.modifiedDate).format('YYYY-MM-DD HH:mm');
 
       fields.forEach(field => {
         form[field].value = post[field];
@@ -112,12 +115,13 @@
 
 
     // 게시글 저장
-    function savePost(boardId) {
+    function savePost() {
       const form = document.getElementById('saveForm');
       let content = CKEDITOR.instances['content'].getData().value;
       form.content.value = content;
-      const fields = [form.title, form.writerId, form.content];
-      const fieldNames = ['제목', '작성자', '내용'];
+
+      const fields = [form.title, form.content];
+      const fieldNames = ['제목', '내용'];
 
       for (let i = 0, len = fields.length; i < len; i++) {
         isValid(fields[i], fieldNames[i]);
@@ -125,7 +129,7 @@
 
       document.getElementById('saveBtn').disabled = true;
       form.noticeYn.value = form.isNotice.checked;
-      form.action = '/post/form/'+ boardId;
+      form.action = '/post/update';
       form.submit();
     }
 

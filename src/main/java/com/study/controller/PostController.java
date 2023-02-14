@@ -1,9 +1,6 @@
 package com.study.controller;
 
-import com.study.domain.BoardDTO;
-import com.study.domain.PostDTO;
-import com.study.domain.PostRequest;
-import com.study.domain.PostResponse;
+import com.study.domain.*;
 import com.study.service.BoardService;
 import com.study.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,57 +23,74 @@ public class PostController {
 
     // 게시판 별 게시글 리스트 페이지
     @GetMapping()
-    public String postList(Model model) {
-        List<PostResponse> posts = postService.findAllPost();
+    public String posts(Model model) {
+        List<PostResponse> postList = postService.findAllPost();
         List<BoardDTO> boardList = boardService.getBoardList();
-        model.addAttribute("posts", posts);
+        model.addAttribute("postList", postList);
         model.addAttribute("boardList",boardList);
         return "post/list";
     }
 
-    // 게시글 작성 페이지
-    @GetMapping("/post/write.do")
-    public String openPostWrite(@RequestParam final Long boardId, Model model) {
-        if (boardId != null) {
-            List<BoardDTO> boardList = boardService.getBoardList();
-            model.addAttribute("boardList", boardList);
-        }
-        //BoardDTO board = boardService.getBoardDetail(boardId);
-        //model.addAttribute("board",board);
-        return "post/write";
-    }
-
-
-
     // 게시글 상세 페이지
     @GetMapping("/{id}")
-    public String postDetail(
-            @PathVariable Long id ,
-            @RequestParam Long boardId, Model model) {
-        log.info("id : ",id);
-        log.info("boardId : ",boardId);
+    public String post(@PathVariable Long id , @RequestParam Long boardId, Model model) {
         List<BoardDTO> boardList = boardService.getBoardList();
         BoardDTO board = boardService.getBoardDetail(boardId);
         PostDTO post = postService.findById(id);
         model.addAttribute("post", post);
         model.addAttribute("board", board);
         model.addAttribute("boardList", boardList);
-
         return "post/view";
     }
 
+    // 게시글 수정 페이지
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id , @RequestParam Long boardId, Model model) {
+        log.info("updateController ::: ");
+        List<BoardDTO> boardList = boardService.getBoardList();
+        BoardDTO board = boardService.getBoardDetail(boardId);
+        PostDTO post = postService.findById(id);
+        model.addAttribute("post", post);
+        model.addAttribute("board", board);
+        model.addAttribute("boardList", boardList);
+        return "post/update";
+    }
+
+    // 게시글 삭제
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id,@RequestParam Long boardId){
+        log.info("deleteController");
+        postService.deletePost(id);
+        return "redirect:/board/" + boardId.toString();
+    }
+
+
+    // 게시글 작성 페이지
+    @GetMapping("/form")
+    public String postForm(@RequestParam final Long boardId, Model model) {
+        log.info("boardId : ",boardId);
+        List<BoardDTO> boardList = boardService.getBoardList();
+        BoardDTO board = boardService.getBoardDetail(boardId);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("board", board);
+        return "post/write";
+    }
+
     // 신규 게시글 생성
-    @PostMapping("/post/save.do")
-    public String savePost(final PostRequest params) {
+    @PostMapping("/form/{id}")
+    public String savePost(@PathVariable Long id , final PostRequest params) {
+        params.setBoardId(id);
         postService.savePost(params);
-        return "redirect:/post/list.do";
+
+        return "redirect:/board/" + id.toString();
     }
 
     // 기존 게시글 수정
-    @PostMapping("/post/update.do")
+    @PostMapping("/update")
     public String updatePost(final PostRequest params) {
+        log.info(params.toString());
         postService.updatePost(params);
-        return "redirect:/post/list.do";
+        return "redirect:/post/" + params.getId() + "?boardId=" + params.getBoardId();
     }
 
 }

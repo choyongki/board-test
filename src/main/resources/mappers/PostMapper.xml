@@ -13,24 +13,33 @@
         , notice_yn as noticeYn
         , delete_yn as deleteYn
         , created_date as createdDate
-        , modified_date as createdDate
+        , modified_date as modifiedDate
     </sql>
 
 
     <!-- 게시글 저장 -->
     <insert id="save" parameterType="com.study.domain.PostRequest" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_post (
-            <include refid="postColumns" />
+            title
+            , content
+            , writer_id
+            , view_cnt
+            , notice_yn
+            , delete_yn
+            , created_date
+            , modified_date
+            , password
+            , board_id
         ) VALUES (
-              #{id}
-            , #{title}
+            #{title}
             , #{content}
             , #{writerId}
             , 0
             , #{noticeYn}
             , 0
-            , NOW()
-            , NULL
+            , now()
+            , now()
+            , #{password}
             , #{boardId}
         )
     </insert>
@@ -50,13 +59,12 @@
 
 
     <!-- 게시글 수정 -->
-    <update id="update" parameterType="com.study.domain.PostRequest">
+    <update id="update" parameterType="com.study.domain.PostDTO">
         UPDATE tb_post
         SET
               modified_date = NOW()
             , title = #{title}
             , content = #{content}
-            , writer_id = #{writerId}
             , notice_yn = #{noticeYn}
         WHERE
             id = #{id}
@@ -91,8 +99,11 @@
         <include refid="postColumns" />
         FROM
             tb_post
-        WHERE
+        WHERE 1=1
+        AND
             board_id = #{id}
+        AND
+            delete_yn = 0
     </select>
 
 </mapper>
