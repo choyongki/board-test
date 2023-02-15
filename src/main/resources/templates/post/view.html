@@ -54,30 +54,87 @@
         </tbody>
       </table>
 
-      <th:block layout:fragment="add-content">
-        <div class="box-content">
-          <div class="card-content">
-            <div class="clearfix">
-              <h4 class="box-title pull-left">Comment</h4>
-              <!-- /.box-title -->
-            </div>
+      <!-- 댓글작성 영역 -->
+      <section class="mb-5">
+        <form id="saveComment" method="post">
+          <div class="board_cmt">
+            <div class="tit" style="margin-left: 6px;"><em id="totalCmt" class="bico_comment"></em>Comments</div>
+            <div class="board_cmt_write">
+              <div class="row"></div>
+                <div class="col-lg-12">
+                  <input type="hidden" id="postId" name="postId" th:value="${post.id}" />
+                  <div class="form-group col-sm-6">
+                    <input type="text" id="content" placeholder="소중한 댓글을 작성해주세요^^" maxlength="150" >
+                  </div>
+                  <div class="form-group col-sm-2">
+                    <input class="form-control input-sm" id="writerId" type="text" placeholder="작성자">
+                  </div>
 
-            <form class="form-horizontal form-view">
-              <div class="input-group margin-bottom-20">
-                <input type="text" id="content" class="form-control" />
-                <div class="input-group-btn">
-                  <button type="button" class="btn waves-effect waves-light" th:onclick="insertComment([[ ${board.id} ]])">
-                    <i class="fa fa-commenting" aria-hidden="true"></i>
-                  </button>
-                </div>
+                  <div class="form-group col-sm-2">
+                    <button type="button" onclick="saveComment()" class="btn btn-primary btn-sm btn-block replyAddBtn">
+                      <i class="fa fa-save"></i> 저장
+                    </button>
+                  </div>
               </div>
-              <ul class="notice-list"></ul>
-            </form>
+            </div>
           </div>
-          <!-- /.card-content -->
+        </form>
+    </section>
+
+      <!-- Comments section-->
+      <section class="mb-5">
+        <div class="card bg-light">
+          <div class="card-body">
+            <!-- Comment with nested comments-->
+            <div th:each="comment : ${commentList}" class="d-flex mb-4">
+              <!-- Parent comment-->
+              <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+              <div class="ms-3">
+                <div th:text="${comment.writerId}" class="fw-bold"></div>
+                <p th:text="${comment.content}"></p>
+
+                <!-- Child comment 1-->
+                <div th:each="commentChild : ${comment.getChildCommentList()}" class="d-flex mt-4">
+                  <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                  <div class="ms-3">
+                    <div th:text="${commentChild.writerId}" class="fw-bold"></div>
+                    <p th:text="${commentChild.content}"></p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- /.box-content -->
-      </th:block>
+      </section>
+
+
+
+
+<!--      <th:block layout:fragment="add-content">-->
+<!--        <div class="box-content">-->
+<!--          <div class="card-content">-->
+<!--            <div class="clearfix">-->
+<!--              <h4 class="box-title pull-left">Comment</h4>-->
+<!--              &lt;!&ndash; /.box-title &ndash;&gt;-->
+<!--            </div>-->
+
+<!--            <form class="form-horizontal form-view">-->
+<!--              <div class="input-group margin-bottom-20">-->
+<!--                <input type="text" id="content" class="form-control" />-->
+<!--                <div class="input-group-btn">-->
+<!--                  <button type="button" class="btn waves-effect waves-light" th:onclick="insertComment([[ ${board.id} ]])">-->
+<!--                    <i class="fa fa-commenting" aria-hidden="true"></i>-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <ul class="notice-list"></ul>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; /.card-content &ndash;&gt;-->
+<!--        </div>-->
+<!--        &lt;!&ndash; /.box-content &ndash;&gt;-->
+<!--      </th:block>-->
 
       <p class="btn_set">
         <a th:href="@{/post/update/{id}(id=${post.id},boardId=${board.id})}" class="btns btn_bdr4 btn_mid">수정</a>
@@ -85,6 +142,19 @@
         <a th:href="@{/board/{id}(id=${board.id})}" class="btns btn_bdr3 btn_mid">뒤로</a>
       </p>
     </section>
+
+    <script>
+      function saveComment(){
+        const form = document.getElementById('saveComment');
+        form.action = "/comment";
+        form.submit();
+      }
+    </script>
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
   </div> <!--/* .content */-->
 </th:block>
 

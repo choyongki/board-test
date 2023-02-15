@@ -1,6 +1,10 @@
 package com.study.service;
 
+import com.study.domain.CommentRequest;
+import com.study.domain.CommentSaveRequest;
 import com.study.mapper.CommentMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,25 +12,22 @@ import java.util.Collections;
 import java.util.List;
 import com.study.domain.CommentDTO;
 
+import javax.transaction.Transactional;
 
+
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
 
-	@Autowired
-	private CommentMapper commentMapper;
+	private final CommentMapper commentMapper;
 
+	@Transactional
 	@Override
-	public boolean registerComment(CommentDTO params) {
-		int queryResult = 0;
-
-		if (params.getIdx() == null) {
-			queryResult = commentMapper.insertComment(params);
-		} else {
-			queryResult = commentMapper.updateComment(params);
-		}
-
-		return (queryResult == 1) ? true : false;
+	public void saveComment(CommentSaveRequest commentSaveRequest) {
+		commentMapper.save(commentSaveRequest);
 	}
+
 
 	@Override
 	public boolean deleteComment(Long idx) {
@@ -42,14 +43,15 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public List<CommentDTO> getCommentList(CommentDTO params) {
-		List<CommentDTO> commentList = Collections.emptyList();
+	public List<CommentDTO> getCommentList(CommentRequest commentRequest) {
 
-		int commentTotalCount = commentMapper.selectCommentTotalCount(params);
-		if (commentTotalCount > 0) {
-			commentList = commentMapper.selectCommentList(params);
+		List<CommentDTO> commentList = commentMapper.selectCommentList(commentRequest);
+		for (int i = 0; i < commentList.size(); i++) {
+			commentRequest.setParentId(commentList.get(i).getId());
+			commentList.get(i).setChildCommentList(commentMapper.selectCommentList(commentRequest));
 		}
 
+		log.info(commentList.toString());
 		return commentList;
 	}
 

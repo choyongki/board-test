@@ -1,6 +1,8 @@
 package com.study.mapper;
 
 import com.study.domain.CommentDTO;
+import com.study.domain.CommentRequest;
+import com.study.domain.CommentSaveRequest;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
-	public int insertComment(CommentDTO params);
+	public int save(CommentSaveRequest commentSaveRequest);
 
 	public CommentDTO selectCommentDetail(Long idx);
 
@@ -16,8 +18,8 @@ public interface CommentMapper {
 
 	public int deleteComment(Long idx);
 
-	public List<CommentDTO> selectCommentList(CommentDTO params);
+	public List<CommentDTO> selectCommentList(CommentRequest commentRequest);
 
-	public int selectCommentTotalCount(CommentDTO params);
+	public int selectCommentTotalCount(Long id);
 
 }

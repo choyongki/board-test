@@ -2,6 +2,7 @@ package com.study.controller;
 
 import com.study.domain.*;
 import com.study.service.BoardService;
+import com.study.service.CommentService;
 import com.study.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class PostController {
 
     private final PostService postService;
     private final BoardService boardService;
+    private final CommentService commentService;
 
     // 게시판 별 게시글 리스트 페이지
     @GetMapping()
@@ -37,9 +39,15 @@ public class PostController {
         List<BoardDTO> boardList = boardService.getBoardList();
         BoardDTO board = boardService.getBoardDetail(boardId);
         PostDTO post = postService.findById(id);
+        CommentRequest commentRequest = CommentRequest.builder()
+                .postId(id)
+                .build();
+
+        List<CommentDTO> commentList = commentService.getCommentList(commentRequest);
         model.addAttribute("post", post);
         model.addAttribute("board", board);
         model.addAttribute("boardList", boardList);
+        model.addAttribute("commentList",commentList);
         return "post/view";
     }
 

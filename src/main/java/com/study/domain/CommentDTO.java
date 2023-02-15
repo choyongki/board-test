@@ -1,18 +1,28 @@
 package com.study.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Getter
 @Setter
 public class CommentDTO extends CommonDTO {
 
-    private Long idx;
+    private Long id;
 
-    private Long boardIdx;
+    private Long parentId;
 
     private String content;
 
     private String writerId;
+
+    private LocalDateTime createdDate;
+
+    private List<CommentDTO> childCommentList;
 
 }
