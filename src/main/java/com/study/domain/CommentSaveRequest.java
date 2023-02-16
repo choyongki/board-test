@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 public class CommentSaveRequest {
     private int postId;
+    private int boardId;
     private int parentId;
     private String content;
     private String writerId;

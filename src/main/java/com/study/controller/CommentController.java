@@ -7,6 +7,7 @@ import com.study.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,11 +29,14 @@ public class CommentController {
     댓글 생성
      */
     @PostMapping()
-    public String saveComment(CommentSaveRequest commentSaveRequest){
+    public String saveComment(CommentSaveRequest commentSaveRequest, Model model){
         log.info("commentController ::");
+        log.info("postid : " ,commentSaveRequest.getPostId());
         commentService.saveComment(commentSaveRequest);
+//        model.addAttribute("boardId",commentSaveRequest.getBoardId());
 
-        return "redirect:/post/" + commentSaveRequest.getPostId();
+
+        return "redirect:/post/" + commentSaveRequest.getPostId() + "?boardId=" + commentSaveRequest.getBoardId();
     }
 
 

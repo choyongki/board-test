@@ -14,10 +14,13 @@
 			modified_date,
 		    deleted_date
 		) VALUES (
-			  #{id}
-			, #{writerId}
-			, #{content}
-			, 0
+			  #{postId} ,
+		      #{writerId} ,
+		      #{content} ,
+			  <choose>
+			  	<when test="parentId != 0">1</when>
+			  	<when test="parentId == 0">0</when>
+			  </choose>
 			, ${parentId}
 			, now()
 			, now()

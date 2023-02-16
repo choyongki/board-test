@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	@Override
 	public void saveComment(CommentSaveRequest commentSaveRequest) {
-		commentMapper.save(commentSaveRequest);
+		commentMapper.saveComment(commentSaveRequest);
 	}
 
 

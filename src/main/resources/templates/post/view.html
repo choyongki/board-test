@@ -1,161 +1,182 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/basic">
 <th:block layout:fragment="title">
-  <title>상세 페이지</title>
+    <title>상세 페이지</title>
 </th:block>
 
 <th:block layout:fragment="content">
-  <div class="page_tits">
-    <h3>게시판 관리</h3>
-  </div>
+    <div class="page_tits">
+        <h3>게시판 관리</h3>
+    </div>
 
-  <div class="content">
-    <section>
-      <table class="tb tb_row">
-        <colgroup>
-          <col style="width:10%;" /><col style="width:23%;" /><col style="width:10%;" /><col style="width:23%;" />
-        </colgroup>
-        <tbody>
-        <tr>
-          <th scope="row">글 유형</th>
-          <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
+    <div class="content">
 
-          <th scope="row">등록일</th>
-          <td th:text="${#temporals.format( post.createdDate, 'yyyy-MM-dd HH:mm' )}"></td>
-        </tr>
-        <tr>
-          <th scope="row">제목</th>
-          <td>[[ ${post.title} ]]</td>
+        <section>
+            <table class="tb tb_row">
+                <colgroup>
+                    <col style="width:10%;"/>
+                    <col style="width:23%;"/>
+                    <col style="width:10%;"/>
+                    <col style="width:23%;"/>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th scope="row">글 유형</th>
+                    <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
 
-          <th scope="row">조회</th>
-          <td colspan="3">[[ ${post.viewCnt} ]]</td>
-        </tr>
-        <tr>
-          <th scope="row">작성자</th>
-          <td colspan="3">[[ ${post.writerId} ]]</td>
-        </tr>
-        <tr>
-          <th scope="row">내용</th>
-          <td colspan="3">
-            <div it="content"></div>
-<!--            <script>-->
-<!--              let tmpStr = [[${post.content}]];-->
-<!--              tmpStr= tmpStr.replaceAll("&lt;","<");-->
-<!--              tmpStr= tmpStr.replaceAll("&gt;",">");-->
-<!--              tmpStr= tmpStr.replaceAll("&amp;lt;","<");-->
-<!--              tmpStr= tmpStr.replaceAll("&amp;gt;",">");-->
-<!--              tmpStr= tmpStr.replaceAll("&amp;nbsp;"," ");-->
-<!--              tmpStr= tmpStr.replaceAll("&amp;amp;","&");-->
-<!--              document.getElementById('content').innerHTML = tmpStr;-->
-<!--            </script>-->
-            [[ ${post.content} ]]
-          </td>
-        </tr>
-        </tbody>
-      </table>
+                    <th scope="row">등록일</th>
+                    <td th:text="${#temporals.format( post.createdDate, 'yyyy-MM-dd HH:mm' )}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">제목</th>
+                    <td>[[ ${post.title} ]]</td>
 
-      <!-- 댓글작성 영역 -->
-      <section class="mb-5">
-        <form id="saveComment" method="post">
-          <div class="board_cmt">
-            <div class="tit" style="margin-left: 6px;"><em id="totalCmt" class="bico_comment"></em>Comments</div>
-            <div class="board_cmt_write">
-              <div class="row"></div>
-                <div class="col-lg-12">
-                  <input type="hidden" id="postId" name="postId" th:value="${post.id}" />
-                  <div class="form-group col-sm-6">
-                    <input type="text" id="content" placeholder="소중한 댓글을 작성해주세요^^" maxlength="150" >
-                  </div>
-                  <div class="form-group col-sm-2">
-                    <input class="form-control input-sm" id="writerId" type="text" placeholder="작성자">
-                  </div>
+                    <th scope="row">조회</th>
+                    <td colspan="3">[[ ${post.viewCnt} ]]</td>
+                </tr>
+                <tr>
+                    <th scope="row">작성자</th>
+                    <td colspan="3">[[ ${post.writerId} ]]</td>
+                </tr>
+                <tr>
+                    <th scope="row">내용</th>
+                    <td colspan="3">[[ ${post.content} ]]</td>
+                </tr>
+                </tbody>
+            </table>
 
-                  <div class="form-group col-sm-2">
-                    <button type="button" onclick="saveComment()" class="btn btn-primary btn-sm btn-block replyAddBtn">
-                      <i class="fa fa-save"></i> 저장
-                    </button>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </form>
-    </section>
+            <p class="btn_set">
+                <a th:href="@{/post/update/{id}(id=${post.id},boardId=${board.id})}"
+                   class="btns btn_bdr4 btn_mid">수정</a>
+                <a th:href="@{/post/delete/{id}(id=${post.id},boardId=${board.id})}"
+                   class="btns btn_bdr1 btn_mid">삭제</a>
+                <a th:href="@{/board/{id}(id=${board.id})}" class="btns btn_bdr3 btn_mid">뒤로</a>
+            </p>
 
-      <!-- Comments section-->
-      <section class="mb-5">
-        <div class="card bg-light">
-          <div class="card-body">
-            <!-- Comment with nested comments-->
-            <div th:each="comment : ${commentList}" class="d-flex mb-4">
-              <!-- Parent comment-->
-              <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-              <div class="ms-3">
-                <div th:text="${comment.writerId}" class="fw-bold"></div>
-                <p th:text="${comment.content}"></p>
+            <!-- 댓글 영역     -->
+            <section class="mb-5">
+                <!-- 댓글작성 영역 -->
+                <form id="saveComment" method="post">
+                    <div class="board_cmt">
+                        <div class="tit" style="margin-left: 6px;"><em id="totalCmt" class="bico_comment"></em>Comments
+                        </div>
+                        <div class="board_cmt_write">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <input type="hidden" ip = "postId" name="postId" th:value="${post.id}"/>
+                                    <input type="hidden" id = "boardId" name="boardId" th:value="${board.id}"/>
+                                    <input type="hidden" id = "parentId" name="parentId" th:value="0"/>
 
-                <!-- Child comment 1-->
-                <div th:each="commentChild : ${comment.getChildCommentList()}" class="d-flex mt-4">
-                  <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                  <div class="ms-3">
-                    <div th:text="${commentChild.writerId}" class="fw-bold"></div>
-                    <p th:text="${commentChild.content}"></p>
-                  </div>
+                                    <div class="form-group col-sm-6">
+                                        <input type="text" name="content" placeholder="소중한 댓글을 작성해주세요^^" maxlength="200" />
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <input class="form-control input-sm" name="writerId" type="text" placeholder="작성자" />
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <button type="button" onclick="saveComment('saveComment')" class="btn btn-primary btn-sm btn-block replyAddBtn">
+                                            <i class="fa fa-save btn "></i> 저장
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <br>
+
+                <!-- Comments section-->
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <!-- Comment with nested comments-->
+                        <div th:each="comment : ${commentList}" class="d-flex mb-4">
+                            <!-- Parent comment-->
+                            <div class="flex-shrink-0"><img class="rounded-circle"
+                                                            src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+                                                            alt="..."/></div>
+                            <div class="ms-3">
+                                <div th:text="${comment.writerId}" class="fw-bold"></div>
+                                <p th:text="${comment.content}"></p>
+                                <div class="row mb-4">
+                                    <details class="col-md-10 col-lg-9">
+                                        <summary>댓글달기</summary>
+                                        <form th:id="${comment.id}"  method="post">
+                                          <input type="hidden" name="postId" th:value="${post.id}"/>
+                                          <input type="hidden" name="boardId" th:value="${board.id}"/>
+                                          <input type="hidden"  name="parentId" th:value="${comment.id}"/>
+                                            <input type="text" name="content" placeholder="댓글 내용" />
+                                            <input type="text" name="writerId" placeholder="작성자" />
+                                            <button type="button" class="btn btn-primary mt-2"  th:onclick="saveComment([[${comment.id}]])">쓰기</button>
+                                        </form>
+                                    </details>
+                                </div>
+
+                                <!-- Child comment 1-->
+                                <div th:each="commentChild : ${comment.getChildCommentList()}" class="d-flex mt-4">
+                                    <div class="flex-shrink-0"><img class="rounded-circle"
+                                                                    src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+                                                                    alt="..."/></div>
+                                    <div class="ms-3">
+                                        <div th:text="${commentChild.writerId}" class="fw-bold"></div>
+                                        <p th:text="${commentChild.content}"></p>
+                                        <div class="row mb-4">
+                                            <details class="col-md-10 col-lg-9 mb-4">
+                                                <summary>댓글달기</summary>
+                                                <form th:id="${commentChild.id}"  method="post">
+                                                    <input type="hidden" th:name="postId" th:value="${post.id}"/>
+                                                    <input type="hidden" th:name="boardId" th:value="${board.id}"/>
+                                                    <input type="hidden" th:name="parentId"  th:value="${comment.id}">
+                                                    <textarea name="content" placeholder="댓글 내용"></textarea>
+                                                    <input type="text" name="writerId" placeholder="작성자" />
+                                                  <button class=" btn btn-primary mt-2" onclick="saveComment('saveChildComment')">쓰기</button>
+                                                </form>
+                                            </details>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
 
 
-
-
-<!--      <th:block layout:fragment="add-content">-->
-<!--        <div class="box-content">-->
-<!--          <div class="card-content">-->
-<!--            <div class="clearfix">-->
-<!--              <h4 class="box-title pull-left">Comment</h4>-->
-<!--              &lt;!&ndash; /.box-title &ndash;&gt;-->
-<!--            </div>-->
-
-<!--            <form class="form-horizontal form-view">-->
-<!--              <div class="input-group margin-bottom-20">-->
-<!--                <input type="text" id="content" class="form-control" />-->
-<!--                <div class="input-group-btn">-->
-<!--                  <button type="button" class="btn waves-effect waves-light" th:onclick="insertComment([[ ${board.id} ]])">-->
-<!--                    <i class="fa fa-commenting" aria-hidden="true"></i>-->
-<!--                  </button>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <ul class="notice-list"></ul>-->
-<!--            </form>-->
-<!--          </div>-->
-<!--          &lt;!&ndash; /.card-content &ndash;&gt;-->
-<!--        </div>-->
-<!--        &lt;!&ndash; /.box-content &ndash;&gt;-->
-<!--      </th:block>-->
-
-      <p class="btn_set">
-        <a th:href="@{/post/update/{id}(id=${post.id},boardId=${board.id})}" class="btns btn_bdr4 btn_mid">수정</a>
-        <a th:href="@{/post/delete/{id}(id=${post.id},boardId=${board.id})}" class="btns btn_bdr1 btn_mid">삭제</a>
-        <a th:href="@{/board/{id}(id=${board.id})}" class="btns btn_bdr3 btn_mid">뒤로</a>
-      </p>
-    </section>
+        </section>
+    </div> <!--/* .content */-->
 
     <script>
-      function saveComment(){
-        const form = document.getElementById('saveComment');
-        form.action = "/comment";
-        form.submit();
-      }
+        function saveComment(commentId) {
+            alert(commentId);
+            let form = "";
+            if (commentId=='saveComment'){
+                form = document.getElementById('saveComment');
+            }else{
+                form = document.getElementById('commentId');
+            }
+
+            alert(form.content.value);
+            alert(form.postId.value);
+            alert(form.boardId.value);
+            alert(form.writerId.value);
+            alert(form.parentId.value);
+            if (form.content.value == "" || form.writerId.value == "") {
+                alert("내용과 작성자 모두 입력해합니다");
+                return false;
+            }
+
+            form.action = "/comment";
+            form.submit();
+        }
+
+
     </script>
 
-    <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
+
+    <!-- Bootstrap core JS-->
     <script src="js/scripts.js"></script>
-  </div> <!--/* .content */-->
+    <!-- Core theme JS-->
 </th:block>
 
 </html>

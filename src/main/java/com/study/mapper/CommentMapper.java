@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
-	public int save(CommentSaveRequest commentSaveRequest);
+	public int saveComment(CommentSaveRequest commentSaveRequest);
 
 	public CommentDTO selectCommentDetail(Long idx);
 
