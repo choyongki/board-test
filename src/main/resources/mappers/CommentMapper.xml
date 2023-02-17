@@ -50,6 +50,14 @@
 
 	</select>
 
+	<select id="deleteComment" parameterType="CommentDeleteRequest">
+		DELETE
+		FROM
+		    tb_comment
+		WHERE
+		    id = #{commentId}
+	</select>
+
 	<select id="selectCommentTotalCount" parameterType="CommentDTO" resultType="int">
 		SELECT
 			COUNT(*)

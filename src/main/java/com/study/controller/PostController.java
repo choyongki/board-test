@@ -1,6 +1,8 @@
 package com.study.controller;
 
 import com.study.domain.*;
+import com.study.file.FileStore;
+import com.study.file.UploadFile;
 import com.study.service.BoardService;
 import com.study.service.CommentService;
 import com.study.service.PostService;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -22,6 +25,9 @@ public class PostController {
     private final PostService postService;
     private final BoardService boardService;
     private final CommentService commentService;
+    //private final FileService fileService;
+
+    private final FileStore fileStore;
 
     // 게시판 별 게시글 리스트 페이지
     @GetMapping()
@@ -86,9 +92,25 @@ public class PostController {
 
     // 신규 게시글 생성
     @PostMapping("/form/{id}")
-    public String savePost(@PathVariable Long id , final PostRequest params) {
-        params.setBoardId(id);
-        postService.savePost(params);
+    public String savePost(@PathVariable Long id , final PostRequest params) throws IOException {
+        log.info("PostController :: savePost");
+        PostDTO postDTO = PostDTO.builder()
+                .writerId(params.getWriterId())
+                .content(params.getContent())
+                .title(params.getTitle())
+                .password(params.getPassword())
+                .noticeYn(params.getNoticeYn())
+                .boardId(id)
+                .build();
+
+        // 첨부파일을 처리하는 부분
+        log.info("file : {}",params.getAttachFile());
+
+
+        UploadFile attachFile = fileStore.storeFile(params.getAttachFile());
+
+        postDTO.setAttachFile(attachFile);
+        postService.savePost(postDTO);
 
         return "redirect:/board/" + id.toString();
     }

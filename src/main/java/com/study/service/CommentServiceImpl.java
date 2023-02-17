@@ -1,5 +1,6 @@
 package com.study.service;
 
+import com.study.domain.CommentDeleteRequest;
 import com.study.domain.CommentRequest;
 import com.study.domain.CommentSaveRequest;
 import com.study.mapper.CommentMapper;
@@ -29,17 +30,10 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 
+	@Transactional
 	@Override
-	public boolean deleteComment(Long idx) {
-		int queryResult = 0;
-
-		CommentDTO comment = commentMapper.selectCommentDetail(idx);
-
-		if (comment != null && "N".equals(comment.getDeleteYn())) {
-			queryResult = commentMapper.deleteComment(idx);
-		}
-
-		return (queryResult == 1) ? true : false;
+	public void deleteComment(CommentDeleteRequest commentDeleteRequest) {
+		commentMapper.deleteComment(commentDeleteRequest);
 	}
 
 	@Override

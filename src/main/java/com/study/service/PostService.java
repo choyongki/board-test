@@ -6,12 +6,14 @@ import com.study.mapper.PostMapper;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -24,7 +26,8 @@ public class PostService {
      * @return Generated PK
      */
     @Transactional
-    public Long savePost(final PostRequest params) {
+    public Long savePost(final PostDTO params) {
+        log.info("PostService :: savePost");
         postMapper.save(params);
         return params.getId();
     }

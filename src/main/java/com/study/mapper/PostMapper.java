@@ -14,7 +14,7 @@ public interface PostMapper {
      * 게시글 저장
      * @param params - 게시글 정보
      */
-    void save(PostRequest params);
+    void save(PostDTO params);
 
     /**
      * 게시글 상세정보 조회

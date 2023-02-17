@@ -1,5 +1,6 @@
 package com.study.controller;
 
+import com.study.domain.CommentDeleteRequest;
 import com.study.domain.CommentSaveRequest;
 import com.study.service.BoardService;
 import com.study.service.CommentService;
@@ -8,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,6 +47,13 @@ public class CommentController {
     /*
     댓글 삭제
      */
+    @GetMapping("/delete/{id}")
+    public String deleteComment(@PathVariable int id, CommentDeleteRequest commentDeleteRequest, Model model){
+        log.info("deleteCommentController :: ");
+        commentDeleteRequest.setCommentId(id);
+        commentService.deleteComment(commentDeleteRequest);
+        return "redirect:/post/" + commentDeleteRequest.getPostId() + "?boardId=" + commentDeleteRequest.getBoardId();
+    }
 
 
 }
