@@ -1,6 +1,8 @@
 package com.study.controller;
 
 import com.study.domain.*;
+import com.study.file.FileDTO;
+import com.study.file.FileService;
 import com.study.file.FileStore;
 import com.study.file.UploadFile;
 import com.study.service.BoardService;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -25,9 +28,9 @@ public class PostController {
     private final PostService postService;
     private final BoardService boardService;
     private final CommentService commentService;
-    //private final FileService fileService;
 
     private final FileStore fileStore;
+    private final FileService fileService;
 
     // 게시판 별 게시글 리스트 페이지
     @GetMapping()
@@ -48,12 +51,22 @@ public class PostController {
         CommentRequest commentRequest = CommentRequest.builder()
                 .postId(id)
                 .build();
-
         List<CommentDTO> commentList = commentService.getCommentList(commentRequest);
+
+        List<FileDTO> fileList = fileService.getFileList(post.getFileGroup());
+        for (int i = 0; i < fileList.size(); i++) {
+            log.info(fileList.get(i).getUri());
+        }
+
         model.addAttribute("post", post);
         model.addAttribute("board", board);
         model.addAttribute("boardList", boardList);
         model.addAttribute("commentList",commentList);
+        model.addAttribute("fileList",fileList);
+
+
+        // 파일정보 넘겨주기
+
         return "post/view";
     }
 
@@ -90,10 +103,31 @@ public class PostController {
         return "post/write";
     }
 
+    // 게시글 작성 페이지
+    @GetMapping("/form2")
+    public String postForm2(@RequestParam final Long boardId, Model model) {
+        log.info("boardId : ",boardId);
+        List<BoardDTO> boardList = boardService.getBoardList();
+        BoardDTO board = boardService.getBoardDetail(boardId);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("board", board);
+        return "post/write2";
+    }
+
     // 신규 게시글 생성
     @PostMapping("/form/{id}")
     public String savePost(@PathVariable Long id , final PostRequest params) throws IOException {
-        log.info("PostController :: savePost");
+
+
+        // 첨부파일을 처리하는 부분
+        log.info("file : {}",params.getAttachFiles());
+        log.info("size : {}",params.getAttachFiles().size());
+        log.info("noticeYn : {}",params.getNoticeYn());
+
+        // 파일 그룹 이름 생성
+        String fileGroup = UUID.randomUUID().toString();
+
+        // 게시글 처리
         PostDTO postDTO = PostDTO.builder()
                 .writerId(params.getWriterId())
                 .content(params.getContent())
@@ -101,16 +135,15 @@ public class PostController {
                 .password(params.getPassword())
                 .noticeYn(params.getNoticeYn())
                 .boardId(id)
+                .fileGroup(fileGroup)
                 .build();
-
-        // 첨부파일을 처리하는 부분
-        log.info("file : {}",params.getAttachFile());
-
-
-        UploadFile attachFile = fileStore.storeFile(params.getAttachFile());
-
-        postDTO.setAttachFile(attachFile);
         postService.savePost(postDTO);
+
+        // 파일 처리
+        // multipart 를 업로드 파일로 변환
+        List<UploadFile> attachFiles = fileStore.storeFiles(params.getAttachFiles(),fileGroup);
+        fileService.saveFile(attachFiles);
+
 
         return "redirect:/board/" + id.toString();
     }

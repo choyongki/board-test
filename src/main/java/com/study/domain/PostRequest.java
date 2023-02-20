@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class PostRequest {
@@ -14,10 +16,10 @@ public class PostRequest {
     private String content;      // 내용
     private String password;      // 비밀번호
     private String writerId;       // 작성자
-    private Boolean noticeYn;    // 공지글 여부
+    private String noticeYn;    // 공지글 여부
 
     private Long boardId; // 게시판
 
-    private MultipartFile attachFile;   // 첨부파일
+    private List<MultipartFile> attachFiles;   // 첨부파일
 
 }

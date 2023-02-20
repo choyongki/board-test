@@ -1,13 +1,12 @@
 package com.study.service;
 
-import com.study.domain.DeleteRequest;
 import com.study.domain.PostDTO;
+import com.study.file.UploadFile;
 import com.study.mapper.PostMapper;
 import com.study.domain.PostRequest;
 import com.study.domain.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,6 +27,7 @@ public class PostService {
     @Transactional
     public Long savePost(final PostDTO params) {
         log.info("PostService :: savePost");
+
         postMapper.save(params);
         return params.getId();
     }

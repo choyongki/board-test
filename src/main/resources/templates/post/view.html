@@ -43,6 +43,14 @@
                     <th scope="row">내용</th>
                     <td colspan="3">[[ ${post.content} ]]</td>
                 </tr>
+                <tr>
+                    <th scope="row">첨부파일</th>
+                    <td colspan="3">
+                        <div th:each="file : ${fileList}">
+                            <a th:if="${file}" th:href="@{/file/{id}(id=${file.id})}" th:text="${file.getOriginalFilename()}"></a>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 
