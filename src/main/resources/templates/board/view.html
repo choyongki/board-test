@@ -7,7 +7,7 @@
 <th:block layout:fragment="content">
 
   <div class="page_tits">
-    <h3>게시판 관리</h3>
+    <h3 th:text="${board.title}"></h3>
     <!--/* 버튼 */-->
     <p class="btn_set tr">
       <a th:href="@{/board/write.do}" class="btns btn_st3 btn_mid">게시판 설정</a>
@@ -50,6 +50,12 @@
       </tr>
       </thead>
       <tbody>
+      <tr class="bg-info bg-opacity-50" th:each="noticePost, status : ${postNoticeList}">
+        <td>공지</td>
+        <td class="tl"><a th:href="@{/post/{id}(id=${noticePost.id},boardId=${board.id})}" th:text="${noticePost.title}"></a></td>
+        <td th:text="${noticePost.writerId}"></td>
+        <td th:text="${#temporals.format( noticePost.createdDate, 'yyyy-MM-dd HH:mm' )}"></td>
+      </tr>
       <tr th:if="${not #lists.isEmpty( postList )}" th:each="post, status : ${postList}">
         <!--            <td><input type="checkbox" /></td>-->
 <!--        <td th:text="${row.noticeYn == false ? (status.size - status.index) : '공지'}"></td>-->

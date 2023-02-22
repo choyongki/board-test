@@ -1,6 +1,7 @@
 package com.study.mapper;
 
 
+import com.study.domain.BoardCreateDTO;
 import com.study.domain.BoardDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,4 +23,5 @@ public interface BoardMapper {
      */
     BoardDTO findById(Long id);
 
+    void saveBoard(BoardCreateDTO boardCreateDTO);
 }

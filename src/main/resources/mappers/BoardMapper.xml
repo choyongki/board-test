@@ -41,6 +41,24 @@
         AND id = #{id}
     </select>
 
+    <insert id="saveBoard" parameterType="BoardCreateDTO">
+        INSERT INTO tb_board (
+                              title,
+                              content,
+                              writer_id,
+                              created_date,
+                              updated_date,
+                              deleted_date
+        ) VALUES (
+                  #{title},
+                  #{content},
+                  #{writerId},
+                  now(),
+                  now(),
+                  null
+        )
+    </insert>
+
 
 
 

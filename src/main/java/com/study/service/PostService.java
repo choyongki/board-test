@@ -73,4 +73,9 @@ public class PostService {
         return postMapper.findByBoardId(id);
     }
 
+    public List<PostDTO> findByBoardIdAndNotice(Long id){
+        return postMapper.findByBoardIdAndNotice(id);
+    }
+
+
 }

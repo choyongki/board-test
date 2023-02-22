@@ -37,6 +37,8 @@ public class PostController {
     public String posts(Model model) {
         List<PostResponse> postList = postService.findAllPost();
         List<BoardDTO> boardList = boardService.getBoardList();
+
+
         model.addAttribute("postList", postList);
         model.addAttribute("boardList",boardList);
         return "post/list";
@@ -116,12 +118,15 @@ public class PostController {
 
     // 신규 게시글 생성
     @PostMapping("/form/{id}")
-    public String savePost(@PathVariable Long id , final PostRequest params) throws IOException {
+    public String savePost(@PathVariable Long id , PostRequest params) throws IOException {
 
 
         // 첨부파일을 처리하는 부분
         log.info("file : {}",params.getAttachFiles());
         log.info("size : {}",params.getAttachFiles().size());
+        if(params.getNoticeYn() == null) {
+            params.setNoticeYn("0");
+        }
         log.info("noticeYn : {}",params.getNoticeYn());
 
         // 파일 그룹 이름 생성

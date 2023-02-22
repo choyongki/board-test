@@ -29,7 +29,7 @@
                 <input type="hidden" id="id" name="id" th:if="${post != null}" th:value="${post.id}"/>
 
                 <!--/* 서버로 전달할 공지글 여부 */-->
-                <input type="hidden" id="noticeYn" name="noticeYn"/>
+<!--                <input type="hidden" id="noticeYn" name="noticeYn"/>-->
 
                 <table class="tb tb_row">
                     <colgroup>
@@ -42,7 +42,7 @@
                     <tr>
                         <th>공지</th>
                         <td>
-                            <span class="chkbox"><input type="checkbox"  name="noticeYn"
+                            <span class="chkbox"><input id="noticeYn" type="checkbox"  name="noticeYn"
                                                         class="chk"/><i></i><label for="noticeYn"> 설정</label></span>
                         </td>
                     </tr>
@@ -180,6 +180,13 @@
             const form = document.getElementById('saveForm');
             let content = CKEDITOR.instances['content'].getData().value;
             form.content.value = content;
+            if(form.noticeYn.checked){
+                form.noticeYn.value = 1;
+                alert(form.noticeYn.value);
+            }else{
+                form.noticeYn.value = 0;
+                alert(form.noticeYn.value);
+            }
 
             const fields = [form.title, form.writerId, form.content];
             const fieldNames = ['제목', '작성자', '내용'];

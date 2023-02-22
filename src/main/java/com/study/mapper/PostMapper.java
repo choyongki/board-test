@@ -49,4 +49,8 @@ public interface PostMapper {
 
     List<PostDTO> findByBoardId(Long id);
 
+    List<PostDTO> findByBoardIdAndNotice(Long id);
+
+
+
 }
