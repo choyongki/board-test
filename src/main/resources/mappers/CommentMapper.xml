@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="study.board.mapper.CommentMapper">
+
+    <select id="findAllByPostId" parameterType="CommentVO" resultType="CommentVO">
+        SELECT
+            id,
+            parent_id as parentId,
+            writer_id as writerId,
+            content,
+            created_date as createdDate
+        FROM
+            tb_comment
+        WHERE 1=1
+            AND	post_id = #{postId}
+            <if test="parentId == null or parentId == ''">AND depth = 0</if>
+            <if test= "parentId != null and parentId != ''">AND parent_id = #{parentId}</if>
+
+    </select>
+
+    <insert id="save" parameterType="CommentVO">
+        INSERT INTO tb_comment (
+            post_id,
+            writer_id,
+            content,
+            <if test="parentId != 0"> depth,</if>
+            parent_id,
+            created_date,
+            modified_date,
+            deleted_date
+        ) VALUES (
+            #{postId} ,
+            #{writerId} ,
+            #{content} ,
+            <if test="parentId != 0">1,</if>
+            #{parentId},
+            now(),
+            now(),
+            null
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/basic">
+<th:block layout:fragment="title">
+    <title>게시판 생성</title>
+</th:block>
+
+<th:block layout:fragment="content">
+
+
+    <div class="page_tits">
+        <h3>게시판 생성</h3>
+        <!--/* 버튼 */-->
+        <p class="btn_set tr">
+            <a th:href="@{/board/write.do}" class="btns btn_st3 btn_mid">게시판 설정</a>
+            <!--            <a th:href="@{/post/form(boardId = ${board.id})}" class="btns btn_st3 btn_mid">게시글 쓰기</a>-->
+        </p>
+    </div>
+
+    <div class="content">
+
+        <section>
+            <form class="form-control" id="saveBoard" action="/board/write" method="post">
+                <table class="tb tb_row">
+                    <colgroup>
+                        <col style="width:15%;"/>
+                        <col style="width:35%;"/>
+                        <col style="width:15%;"/>
+                        <col style="width:35%;"/>
+                    </colgroup>
+
+                    <tbody>
+                    <tr>
+                        <th>게시판 이름</th>
+                        <td colspan="3">
+                            <input type="text" id="title" name="title" required="required">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>작성자</th>
+                        <td colspan="3">
+                            <input type="text" id="writerId" name="writerId" required="required">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>내용</th>
+                        <td colspan="3">
+                            <input type="text" id="content" name="content" cols="40" rows="10" required="required">
+                            <!--<iframe class="embedded-trinket embedded-content" src="//trinket.io/embed/python?start=result#code=import%20turtle%0Atina%20%3D%20turtle.Turtle()%0Atina.shape(%22turtle%22)%0A%0Atina.forward(50)%0Atina.left(90)%0Atina.forward(50)%0Atina.left(90)%0Atina.forward(50)" width="100%" height="400" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen=""></iframe>-->
+                            <script>
+                                document.addEventListener('keydown',(event) => {
+                                    console.log(event)
+                                })
+                            </script>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <p class="btn_set">
+                    <button type="button" id="saveBtn" class="btns btn_st3 btn_mid" onclick="saveBoard()">저장</button>
+                    <a th:href="@{/board/1}" class="btns btn_bdr3 btn_mid">뒤로</a>
+                </p>
+            </form>
+        </section>
+
+
+
+
+
+
+    </div>
+
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script>
+        function saveBoard() {
+
+            const form = document.getElementById('saveBoard');
+
+            alert(form.content.value);
+            alert(form.writerId.value);
+            alert(form.title.value);
+
+            form.action = "/board/write";
+
+            form.submit();
+        }
+    </script>
+
+</th:block>
+</html>

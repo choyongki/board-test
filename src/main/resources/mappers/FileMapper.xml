@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="study.board.mapper.FileMapper">
+    <select id="select" parameterType="string" resultType="FileDTO">
+        SELECT
+            id,
+            original_filename as originalFilename,
+            type,
+            uri,
+            size
+        FROM tb_file
+        WHERE file_group = #{fileGroup}
+    </select>
+
+    <select id="findById" parameterType="long" resultType="FileDTO">
+        SELECT
+            id,
+            original_filename as originalFilename,
+            stored_filename as storedFilename,
+            size,
+            type,
+            uri,
+            file_group as fileGroup
+        FROM tb_file
+        WHERE id = #{id}
+    </select>
+
+    <insert id="save" parameterType="UploadFile">
+        INSERT INTO tb_file (
+            file_group,
+            original_filename,
+            stored_filename,
+            size,
+            uri,
+            type,
+            created_date,
+            modified_date,
+            deleted_date
+        )
+        VALUES (
+                   #{fileGroup},
+                   #{originalFilename},
+                   #{storedFilename},
+                   #{size},
+                   #{uri},
+                   #{type},
+                   now(),
+                   now(),
+                   null
+               )
+    </insert>
+</mapper>

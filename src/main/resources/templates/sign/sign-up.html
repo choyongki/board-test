@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<th:block layout:fragment="title">
+  <title>리스트 페이지</title>
+</th:block>
+
+<th:block layout:fragment="content">
+  <form method="post" action="/signup">
+    <div class="container">
+      <h1>회원가입</h1>
+      <div class="form-group">
+        <label for="userId">userId</label>
+        <input type="text" class="form-control" id="userId" name="userId" placeholder="사용자 아이디">
+      </div>
+      <div class="form-group">
+        <label for="email">email</label>
+        <input type="text" class="form-control" id="email" name="userId" placeholder="사용자 아이디">
+      </div>
+      <div class="form-group">
+        <label for="memberName">memberName</label>
+        <input type="text" class="form-control" id="memberName" name="memberName" placeholder="사용자 이름">
+      </div>
+      <div class="form-group">
+        <label for="nickName">nickName</label>
+        <input type="text" class="form-control" id="nickName" name="nickName" placeholder="사용자 이름">
+      </div>
+      <div class="form-group">
+        <label for="inputPassword4">password</label>
+        <input type="password" class="form-control" id="inputPassword4" name="userPw" placeholder="사용자 비밀번호">
+      </div>
+      <button type="submit" class="btn btn-primary">가입 완료</button>
+    </div>
+  </form>
+
+</th:block>
+</html>
