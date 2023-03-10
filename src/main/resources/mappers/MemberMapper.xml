@@ -2,6 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="study.board.mapper.MemberMapper">
-
+    <insert id="save" parameterType="MemberVO">
+        INSERT INTO tb_member (
+                               account,
+                               email,
+                               nickname,
+                               member_name,
+                               phone,
+                               <if test="memberRole != null">member_role,</if>
+                               password,
+                               created_date,
+                               modified_date,
+                               deleted_date
+        )
+        VALUES (
+                #{account},
+                #{email},
+                #{nickname},
+                #{memberName},
+                #{phone},
+                <if test="memberRole != null">#{memberRole},</if>
+                #{password},
+                now(),
+                now(),
+                null
+               )
+    </insert>
 </mapper>
 

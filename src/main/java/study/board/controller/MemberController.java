@@ -3,9 +3,8 @@ package study.board.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import study.board.service.MemberService;
+import study.board.service.SignService;
 
 @Slf4j
 @RequestMapping("/member")
@@ -13,6 +12,6 @@ import study.board.service.MemberService;
 @Controller
 public class MemberController {
 
-    private final MemberService memberService;
+    private final SignService signService;
 
 }
