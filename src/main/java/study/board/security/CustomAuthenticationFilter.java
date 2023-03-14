@@ -21,6 +21,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
 
     public Authentication attempAuthentication(HttpServletRequest request, HttpServletResponse response){
+        log.info("attempAuthentication ::: ");
         UsernamePasswordAuthenticationToken authRequest;
         try {
             authRequest = getAuthRequest(request);
@@ -39,6 +40,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
      * @throws Exception e
      */
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) throws Exception {
+        log.info("getAuthRequest ::: ");
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);

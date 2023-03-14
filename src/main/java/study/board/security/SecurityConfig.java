@@ -2,12 +2,14 @@ package study.board.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,20 +22,45 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
+
+    private final WebAccessDeniedHandler webAccessDeniedHandler;
+    private final WebAuthenticationEntryPoint webAuthenticationEntryPoint;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        // 정적 자원에 대해서 security를 적용하지 않음
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        log.info("filterChain ::: {}",http);
         http
                 .httpBasic().disable()
                 .csrf().disable()   // 서버에 인증정보를 저장하지 않기에 csrf를 사용하지 않는다.
-                .formLogin().disable()  // 스프링 시큐리티에서 제공하는 form 기반의 로그인에 대해 비활성화, 별로로 구성한 필터를 사용
-                .authorizeHttpRequests((authz) -> authz.anyRequest().permitAll()) // 토큰을 활용하는 경우 모든 요청에 대해 '인가'에 대해서 사용
-                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy((SessionCreationPolicy.STATELESS)) // 세션 기반의 인증을 사용하지 않고 추후 JWT를 이용하여 인증 예정
-                .and()
                 .authorizeRequests()
-                .antMatchers("/sign/**").permitAll()
-                .anyRequest().authenticated();
-
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/sign/**").permitAll()
+                    .antMatchers("/board/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                    .accessDeniedHandler(webAccessDeniedHandler)
+//                    .authenticationEntryPoint(webAuthenticationEntryPoint)
+                .and()
+                .formLogin().disable()
+//                    .loginPage("sign/sign-in/view")
+//                    .successHandler(customLoginSuccessHandler())
+//                    .failureHandler(customLoginFailureHandler())
+//                    .permitAll()
+//                .and()
+                .logout()
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")// 스프링 시큐리티에서 제공하는 form 기반의 로그인에 대해 비활성화, 별로로 구성한 필터를 사용
+//                .authorizeHttpRequests((authz) -> authz.anyRequest().permitAll()) // 토큰을 활용하는 경우 모든 요청에 대해 '인가'에 대해서 사용
+//                .sessionManagement().sessionCreationPolicy((SessionCreationPolicy.STATELESS)) // 세션 기반의 인증을 사용하지 않고 추후 JWT를 이용하여 인증 예정
+                .and()
+                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -45,6 +72,7 @@ public class SecurityConfig {
      */
     @Bean
     public AuthenticationManager authenticationManager(){
+        log.info("authenticationManager ::: ");
         return new ProviderManager(customAuthenticationProvider());
     }
 
@@ -56,6 +84,7 @@ public class SecurityConfig {
      */
     @Bean
     public CustomAuthenticationProvider customAuthenticationProvider(){
+        log.info("customAuthenticationProvider ::: ");
         return new CustomAuthenticationProvider(encodePassword());
     }
 
@@ -74,8 +103,9 @@ public class SecurityConfig {
      */
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter(){
+        log.info("customAuthenticationFilter ::: ");
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager());
-        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/user/login");     // 접근 URL
+        customAuthenticationFilter.setFilterProcessesUrl("/sign/sign-in");     // 접근 URL
         customAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.setAuthenticationFailureHandler(customLoginFailureHandler());    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.afterPropertiesSet();
@@ -99,6 +129,15 @@ public class SecurityConfig {
     public CustomAuthFailureHandler customLoginFailureHandler() {
         return new CustomAuthFailureHandler();
     }
-
+//
+//    @Bean
+//    public WebAccessDeniedHandler webAccessDeniedHandler(){
+//        return new WebAccessDeniedHandler();
+//    }
+//
+//    @Bean
+//    public WebAuthenticationEntryPoint webAuthenticationEntryPoint(){
+//        return new WebAuthenticationEntryPoint();
+//    }
 
 }

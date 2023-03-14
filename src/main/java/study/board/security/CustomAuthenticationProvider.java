@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -29,7 +30,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.debug("2.CustomAuthenticationProvider");
+        log.debug("CustomAuthenticationProvider");
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
@@ -38,16 +39,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String userPw = (String) token.getCredentials();
 
         // Spring Security - UserDetailsService를 통해 DB에서 아이디로 사용자 조회
-        UserDetailsDto userDetailsDto = (UserDetailsDto) userDetailsService.loadUserByUsername(userId);
+        UserDetails member = (UserDetails) userDetailsService.loadUserByUsername(userId);
 
-        if (!(userDetailsDto.getUserPw().equalsIgnoreCase(userPw) && userDetailsDto.getUserPw().equalsIgnoreCase(userPw))) {
-            throw new BadCredentialsException(userDetailsDto.getUserNm() + "Invalid password");
+        if (!(member.getPassword().equalsIgnoreCase(userPw) && member.getPassword().equalsIgnoreCase(userPw))) {
+            throw new BadCredentialsException(member.getUsername() + "Invalid password");
         }
-        return new UsernamePasswordAuthenticationToken(userDetailsDto, userPw, userDetailsDto.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(member, userPw, member.getAuthorities());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

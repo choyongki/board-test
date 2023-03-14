@@ -24,7 +24,7 @@ public class SignController {
      * 로그인 페이지
      * @return
      */
-    @GetMapping("/sign-in")
+    @GetMapping("/sign-in/view")
     public String signInForm(){
 
         return "sign/sign-in";

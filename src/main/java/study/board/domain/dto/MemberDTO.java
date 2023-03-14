@@ -1,14 +1,20 @@
 package study.board.domain.dto;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 import study.board.domain.vo.MemberVO;
+import study.board.security.UserDetailsDTO;
+
+import java.util.Collection;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Setter
 @Getter
-public class MemberDTO {
+public class MemberDTO implements UserDetails {
     private String account;
     private String email;
     private String nickname;
@@ -39,5 +45,35 @@ public class MemberDTO {
                 memberVO.getMemberRole(),
                 memberVO.getPassword()
         );
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.createAuthorityList(this.memberRole);
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getAccount();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

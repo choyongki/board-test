@@ -25,6 +25,7 @@ public class SignService {
     }
 
     public void signIn(MemberDTO memberDTO) {
+        log.info("memberDTO.toMemberVO() : {}",memberDTO.toMemberVO().toString());
         MemberVO memberVO = memberMapper.findByAccount(memberDTO.getAccount());
     }
 
